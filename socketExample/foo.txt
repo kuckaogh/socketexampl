@@ -1,0 +1,4 @@
+BEGIN FILEPATH
+c:\temp\a.lp
+END
+
