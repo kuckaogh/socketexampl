@@ -1,11 +1,14 @@
-package example;
+package wrimsv2.solver.Gurobi;
 
 //TCPServer.java
+
+import gurobi.GRB;
 
 import java.io.*;
 import java.net.*;
 
-class TCPServer {
+
+class Server {
 	
 	
 	public static void main(String argv[]){
@@ -39,14 +42,28 @@ class TCPServer {
 	
 			PrintWriter outToClient = new PrintWriter(connected.getOutputStream(), true);
 	
+			DataOutputStream dataOutToClient=new DataOutputStream(connected.getOutputStream());
+			
 			
 			if (Misc.handShake(outToClient, inFromClient, Misc.msg_handShake)){
 				
 				System.out.println("OK");
 				
-				String filePath = Misc.receiveData(inFromClient);
+				String LpFilePath = Misc.receiveData(inFromClient);
 				
-				System.out.println(filePath);
+				System.out.println(LpFilePath);
+				
+				LpResult result = LpTest.solveLP(LpFilePath);
+				
+				Misc.sendLpResult(dataOutToClient, result);
+				
+//				if (result.status == GRB.Status.OPTIMAL){
+//				
+//					Misc.sendStrings(dataOutToClient, result.varNames);
+//				
+//					Misc.sendDoubles(dataOutToClient, result.varValues);
+				
+					
 				
 				// call sub to send data
 				// inData = Misc.readAll(inFromClient);
